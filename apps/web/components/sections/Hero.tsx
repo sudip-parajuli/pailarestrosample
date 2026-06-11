@@ -11,10 +11,12 @@ interface HeroData {
 }
 
 export default function Hero({ data }: { data: HeroData | null }) {
+  // Point directly to the file inside your public folder
+  const bgVideo = "/herovid.mp4"
+
   const bgImage = data?.heroImage
-  ? urlFor(data.heroImage).width(1920).quality(85).url()
-  : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=85&auto=format'
-// ↑ warm restaurant interior — replace with any Unsplash /photo/[id] you prefer
+    ? urlFor(data.heroImage).width(1920).quality(85).url()
+    : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=85&auto=format'
 
   return (
     <section
@@ -24,7 +26,19 @@ export default function Hero({ data }: { data: HeroData | null }) {
     >
       {/* Full-bleed background */}
       <div className="absolute inset-0 z-0">
-        {bgImage ? (
+        {bgVideo ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster={bgImage}
+            className="w-full h-full object-cover img-bleed"
+          >
+            <source src={bgVideo} type="video/mp4" />
+            {bgImage && <img src={bgImage} alt="Paila Restaurant ambiance" className="img-bleed" />}
+          </video>
+        ) : bgImage ? (
           <img src={bgImage} alt="Paila Restaurant ambiance" className="img-bleed" />
         ) : (
           /* Decorative fallback — atmospheric gradient */
@@ -34,7 +48,6 @@ export default function Hero({ data }: { data: HeroData | null }) {
               background: 'linear-gradient(135deg, #1C0A00 0%, #2A1810 40%, #3D1F0D 70%, #1C0A00 100%)',
             }}
           >
-            {/* Subtle texture lines */}
             <div className="absolute inset-0 opacity-5"
               style={{
                 backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(212,168,83,0.3) 40px, rgba(212,168,83,0.3) 41px)',
