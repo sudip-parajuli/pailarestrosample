@@ -21,7 +21,7 @@ const baskerville = Libre_Baskerville({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  metadataBase: new URL('https://pailarestrosample-web.vercel.app'),
   title: 'Paila Restaurant & Bar | Kathmandu',
   description:
     'A family restaurant and bar in the heart of Kathmandu. Authentic flavors, warm hospitality.',

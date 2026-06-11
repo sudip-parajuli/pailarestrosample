@@ -12,8 +12,9 @@ interface HeroData {
 
 export default function Hero({ data }: { data: HeroData | null }) {
   const bgImage = data?.heroImage
-    ? urlFor(data.heroImage as Parameters<typeof urlFor>[0]).width(1920).quality(85).url()
-    : null
+  ? urlFor(data.heroImage).width(1920).quality(85).url()
+  : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=85&auto=format'
+// ↑ warm restaurant interior — replace with any Unsplash /photo/[id] you prefer
 
   return (
     <section
