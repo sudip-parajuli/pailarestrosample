@@ -132,7 +132,7 @@ export default function About({ data }: { data: any }) {
               {(data?.features?.length > 0
                 ? data.features.map((f: any, i: number) => ({ ...STATS[i], label: f.title, value: STATS[i]?.value || 0 }))
                 : STATS
-              ).map((stat, i) => (
+              ).map((stat: { value: number; suffix: string; label: string }, i: number) => (
                 <div
                   key={i}
                   className="pt-5"
