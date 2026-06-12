@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import TransitionLink from '@/components/ui/TransitionLink'
 
 export const metadata: Metadata = {
   title: 'Contact | Paila Restaurant & Bar',
@@ -83,14 +83,14 @@ export default function ContactPage() {
             </div>
           </div>
 
-          <Link
+          <TransitionLink
             id="contact-book-table"
             href="/reservations"
             className="inline-block mt-10 px-8 py-4 font-sans text-sm tracking-widest uppercase"
             style={{ backgroundColor: 'var(--color-copper)', color: 'var(--color-cream)' }}
           >
             Book a Table
-          </Link>
+          </TransitionLink>
         </div>
 
         {/* Map placeholder */}
@@ -126,7 +126,7 @@ export default function ContactPage() {
 
 const CONTACT_BLOCKS = [
   { icon: '📍', label: 'Address',   value: 'Thamel, Kathmandu 44600, Nepal',  href: null },
-  { icon: '📞', label: 'Phone',     value: '+977 XX XXXX XXXX',                href: 'tel:+977XXXXXXXXXX' },
+  { icon: '📞', label: 'Phone',     value: '+977 98 0123 4567',                href: 'tel:+9779801234567' },
   { icon: '✉️', label: 'Email',     value: 'hello@pailarestaurant.com',         href: 'mailto:hello@pailarestaurant.com' },
   { icon: '📸', label: 'Instagram', value: '@pailarestaurant',                  href: 'https://instagram.com' },
 ]

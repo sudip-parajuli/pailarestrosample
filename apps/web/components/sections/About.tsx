@@ -1,122 +1,167 @@
+'use client'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, useInView } from 'framer-motion'
+import { PortableText } from '@portabletext/react'
 import { urlFor } from '@/lib/sanity'
+import Reveal from '@/components/ui/Reveal'
 
-interface AboutData {
-  aboutText?: Array<{ _type: string; children?: Array<{ text: string }> }>
-  aboutImage?: object
-  features?: Array<{ icon?: string; title?: string; text?: string }>
-}
+const ABOUT_FALLBACK_IMG =
+  'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85&auto=format&fit=crop'
 
-export default function About({ data }: { data: AboutData | null }) {
-  const aboutImg = data?.aboutImage
-    ? urlFor(data.aboutImage as Parameters<typeof urlFor>[0]).width(900).quality(85).url()
-    : null
+const STATS = [
+  { value: 40, suffix: '+', label: 'Dishes on menu' },
+  { value: 12, suffix: '', label: 'Craft cocktails' },
+  { value: 100, suffix: '%', label: 'Locally sourced' },
+  { value: 7, suffix: ' days', label: 'Open weekly' },
+]
 
-  const features = data?.features?.length ? data.features : DEFAULT_FEATURES
+function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
 
   return (
-    <section id="about" className="py-24 px-6" style={{ backgroundColor: 'var(--color-charcoal)' }}>
+    <motion.span
+      ref={ref}
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1 } : {}}
+    >
+      <motion.span
+        initial={{ textContent: '0' } as any}
+        animate={inView ? { textContent: value } as any : {}}
+        transition={{ duration: 1.8, ease: 'easeOut', delay: 0.2 }}
+        onUpdate={(latest: any) => {
+          if (ref.current) {
+            ref.current.textContent = Math.floor(Number(latest.textContent)) + suffix
+          }
+        }}
+      >
+        0
+      </motion.span>
+    </motion.span>
+  )
+}
+
+export default function About({ data }: { data: any }) {
+  const sectionRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  })
+  const imgY = useTransform(scrollYProgress, [0, 1], ['-8%', '8%'])
+
+  const aboutImg = data?.aboutImage
+    ? urlFor(data.aboutImage).width(900).quality(85).url()
+    : ABOUT_FALLBACK_IMG
+
+  return (
+    <section
+      ref={sectionRef}
+      className="py-24 px-6 overflow-hidden"
+      style={{ backgroundColor: '#2A1810' }}
+    >
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
 
-        {/* Image — full bleed on its column */}
-        <div className="aspect-[3/4] overflow-hidden relative">
-          {aboutImg ? (
-            <img src={aboutImg} alt="Paila Restaurant interior" className="img-bleed" />
-          ) : (
+        {/* ── Image with parallax ────────────────────────────────────── */}
+        <Reveal direction="left">
+          <div className="relative aspect-[3/4] overflow-hidden">
+            <motion.img
+              src={aboutImg}
+              alt="Inside Paila Restaurant"
+              className="w-full h-[115%] object-cover object-center absolute top-[-7.5%]"
+              style={{ y: imgY }}
+            />
+            {/* Decorative corner frame */}
             <div
-              className="w-full h-full flex items-end p-8"
+              className="absolute inset-4 border pointer-events-none"
+              style={{ borderColor: 'rgba(212,168,83,0.2)' }}
+            />
+          </div>
+        </Reveal>
+
+        {/* ── Text content ──────────────────────────────────────────── */}
+        <div>
+          <Reveal delay={0.1}>
+            <p
+              className="text-base mb-4"
+              style={{ fontFamily: 'var(--font-accent)', fontStyle: 'italic', color: '#D4A853' }}
+            >
+              Our Story
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.15}>
+            <h2
+              className="font-display mb-8"
               style={{
-                background: 'linear-gradient(160deg, #3D1F0D 0%, #1C0A00 100%)',
+                fontSize: 'clamp(36px, 5vw, 64px)',
+                color: '#F7F0E6',
+                lineHeight: 1.05,
               }}
             >
-              {/* Decorative quote overlay */}
-              <blockquote
-                className="font-accent italic text-xl leading-relaxed"
-                style={{ fontFamily: 'var(--font-family-accent)', color: 'rgba(212,168,83,0.7)' }}
-              >
-                &ldquo;Food is the thread that stitches<br />every story worth telling.&rdquo;
-              </blockquote>
-            </div>
-          )}
-          {/* Gold accent line */}
-          <div
-            className="absolute top-0 left-0 w-1 h-24"
-            style={{ backgroundColor: 'var(--color-gold)' }}
-          />
-        </div>
+              A family table,<br />open to all
+            </h2>
+          </Reveal>
 
-        {/* Text */}
-        <div>
-          <p
-            className="font-accent italic text-base mb-4 tracking-wide"
-            style={{ fontFamily: 'var(--font-family-accent)', color: 'var(--color-gold)' }}
-          >
-            Our Story
-          </p>
-          <h2
-            className="text-display font-display mb-8"
-            style={{ fontFamily: 'var(--font-family-display)', color: 'var(--color-cream)' }}
-          >
-            A family table,<br />open to all
-          </h2>
-
-          <div className="font-sans text-base leading-relaxed space-y-4"
-            style={{ color: 'rgba(237,228,216,0.72)' }}>
-            {data?.aboutText ? (
-              // Render portable text blocks as paragraphs
-              data.aboutText
-                .filter(b => b._type === 'block')
-                .map((block, i) => (
-                  <p key={i}>
-                    {block.children?.map(c => c.text).join('')}
+          <Reveal delay={0.2}>
+            <div
+              className="text-base leading-relaxed space-y-4 mb-10"
+              style={{ fontFamily: 'var(--font-sans)', color: 'rgba(237,228,216,0.65)' }}
+            >
+              {data?.aboutText ? (
+                <PortableText value={data.aboutText} />
+              ) : (
+                <>
+                  <p>
+                    Paila began as a dream shared around a kitchen table — a place where the
+                    warmth of Nepali hospitality meets the vibrancy of modern dining.
                   </p>
-                ))
-            ) : (
-              <>
-                <p>
-                  Paila began as a dream shared around a kitchen table — a place where the warmth
-                  of Nepali hospitality meets the vibrance of modern dining.
-                </p>
-                <p>
-                  Every dish we serve carries the memory of a grandmother&apos;s recipe,
-                  refined with care for the table you share with us today.
-                </p>
-                <p>
-                  We source our ingredients from local farms across the valley, honoring the
-                  farmers who sustain our community and the seasons that dictate our menu.
-                </p>
-              </>
-            )}
-          </div>
+                  <p>
+                    Every dish we serve carries the memory of a grandmother's recipe, refined
+                    with care for the table you share with us. We source our ingredients from
+                    local farms in the Kathmandu Valley, and our bar celebrates the botanical
+                    wealth of the Himalayas.
+                  </p>
+                </>
+              )}
+            </div>
+          </Reveal>
 
-          {/* Feature highlights */}
-          <div className="grid grid-cols-2 gap-6 mt-12">
-            {features.map((f, i) => (
-              <div
-                key={i}
-                className="pt-4"
-                style={{ borderTop: '1px solid rgba(247,240,230,0.1)' }}
-              >
-                <span className="text-2xl mb-2 block">{f.icon ?? '✦'}</span>
-                <p className="font-sans font-medium text-sm mb-1"
-                  style={{ color: 'var(--color-cream)' }}>
-                  {f.title}
-                </p>
-                <p className="font-sans text-xs leading-relaxed"
-                  style={{ color: 'var(--color-mist)' }}>
-                  {f.text}
-                </p>
-              </div>
-            ))}
-          </div>
+          {/* ── Stats grid ──────────────────────────────────────────── */}
+          <Reveal delay={0.3}>
+            <div className="grid grid-cols-2 gap-6">
+              {(data?.features?.length > 0
+                ? data.features.map((f: any, i: number) => ({ ...STATS[i], label: f.title, value: STATS[i]?.value || 0 }))
+                : STATS
+              ).map((stat, i) => (
+                <div
+                  key={i}
+                  className="pt-5"
+                  style={{ borderTop: '1px solid rgba(247,240,230,0.08)' }}
+                >
+                  <p
+                    className="mb-1"
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '2.5rem',
+                      fontWeight: 300,
+                      color: '#C4622D',
+                      lineHeight: 1,
+                    }}
+                  >
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                  </p>
+                  <p
+                    className="text-sm"
+                    style={{ fontFamily: 'var(--font-sans)', color: 'rgba(247,240,230,0.4)' }}
+                  >
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
   )
 }
-
-const DEFAULT_FEATURES = [
-  { icon: '🌾', title: 'Farm to Table',       text: 'Seasonal ingredients sourced from local Nepali farms.' },
-  { icon: '🔥', title: 'Live Fire Cooking',   text: 'Charcoal grills and clay ovens at the heart of our kitchen.' },
-  { icon: '🍷', title: 'Curated Bar',         text: 'Craft cocktails inspired by Himalayan botanicals.' },
-  { icon: '🎶', title: 'Live Music',          text: 'Local artists perform every Friday and Saturday evening.' },
-]

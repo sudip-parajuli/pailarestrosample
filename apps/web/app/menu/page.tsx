@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { client } from '@/lib/sanity'
 import { MENU_QUERY } from '@/lib/sanity'
 import { urlFor } from '@/lib/sanity'
-import Link from 'next/link'
+import TransitionLink from '@/components/ui/TransitionLink'
 
 export const metadata: Metadata = {
   title: 'Menu | Paila Restaurant & Bar',
@@ -135,14 +135,14 @@ export default async function MenuPage() {
             style={{ fontFamily: 'var(--font-family-display)', color: 'var(--color-ember)' }}>
             Ready to dine?
           </p>
-          <Link
+          <TransitionLink
             id="menu-book-table"
             href="/reservations"
             className="inline-block px-10 py-4 font-sans text-sm tracking-widest uppercase"
             style={{ backgroundColor: 'var(--color-copper)', color: 'var(--color-cream)' }}
           >
             Book a Table
-          </Link>
+          </TransitionLink>
         </div>
       </div>
     </div>

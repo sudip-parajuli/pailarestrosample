@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import TransitionLink from '@/components/ui/TransitionLink'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -54,9 +54,9 @@ export default function Footer() {
             <p className="font-sans text-xs tracking-widest uppercase text-gold mb-5">Navigate</p>
             <div className="grid grid-cols-2 gap-2 font-sans text-sm">
               {[['/', 'Home'], ['/menu', 'Menu'], ['/about', 'About'], ['/gallery', 'Gallery'], ['/contact', 'Contact'], ['/reservations', 'Reservations']].map(([href, label]) => (
-                <Link key={href} href={href} className="hover:text-cream transition-colors">
+                <TransitionLink key={href} href={href} className="hover:text-cream transition-colors">
                   {label}
-                </Link>
+                </TransitionLink>
               ))}
             </div>
           </div>
@@ -67,8 +67,8 @@ export default function Footer() {
           <p className="font-sans text-xs tracking-widest uppercase text-gold mb-5">Find Us</p>
           <address className="font-sans text-sm not-italic leading-relaxed space-y-2">
             <p>Thamel, Kathmandu, Nepal</p>
-            <a href="tel:+977XXXXXXXXXX" className="block hover:text-cream transition-colors">
-              +977 XX XXXX XXXX
+            <a href="tel:+9779801234567" className="block hover:text-cream transition-colors">
+              +977 98 0123 4567
             </a>
             <a href="mailto:hello@pailarestaurant.com" className="block hover:text-cream transition-colors">
               hello@pailarestaurant.com
@@ -76,12 +76,12 @@ export default function Footer() {
           </address>
 
           <div className="mt-8">
-            <Link
+            <TransitionLink
               href="/reservations"
               className="inline-block bg-copper text-cream px-6 py-3 font-sans text-xs tracking-widest uppercase hover:bg-copper/90 transition-colors"
             >
               Book a Table
-            </Link>
+            </TransitionLink>
           </div>
         </div>
       </div>

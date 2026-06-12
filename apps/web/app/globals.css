@@ -83,3 +83,41 @@ html {
 /* Font family shortcuts */
 .font-display { font-family: var(--font-family-display); }
 .font-accent  { font-family: var(--font-family-accent); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Phase 1 Upgrade — globals-additions                                         */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/* Hide default cursor globally when CustomCursor is active.
+   CustomCursor.tsx sets this via JS, but this prevents flash on load. */
+@media (pointer: fine) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Restore cursor for inputs and textareas so they get the text I-beam */
+@media (pointer: fine) {
+  input, textarea, select {
+    cursor: text !important;
+  }
+}
+
+/* Prevent horizontal overflow from marquee on narrow screens */
+body {
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* MarqueeStrip — global keyframes (avoids styled-jsx dependency)              */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.marquee-track {
+  animation: marquee 28s linear infinite;
+  width: max-content;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
