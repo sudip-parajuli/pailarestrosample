@@ -121,3 +121,8 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
 }
+
+/* ─── Reservation form loading spinner ─────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
